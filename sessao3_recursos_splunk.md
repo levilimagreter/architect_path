@@ -112,7 +112,5 @@ Calcule:
 ## 8. Boas práticas finais
 
 - Adicionar margem de crescimento
-- Validar com Monitoring Console
-- Fazer POC quando possível
 - Documentar premissas para cada cálculo
 - Referência: [Splunk Capacity Planning](https://docs.splunk.com/Documentation/Splunk/latest/Capacity/Referencehardware)
