@@ -181,10 +181,106 @@ flowchart TD
 ```
 _____
 
-- Quando e como usar:
-  - Universal Forwarder (UF)
-  - Heavy Forwarder (HF)
-  - Intermediate Forwarder (IF)
+
+# Forwarders no Splunk – Quando e Como Usar
+
+## Introdução
+O Splunk utiliza diferentes tipos de forwarders para coleta, processamento e encaminhamento de dados. Escolher o tipo correto de forwarder é essencial para otimizar performance, escalabilidade e simplicidade operacional.
+
+---
+
+## Tabela Resumo
+
+| Tipo de Forwarder | Principal Função | Quando Usar | Comentários |
+|:------------------|:-----------------|:------------|:------------|
+| **Universal Forwarder (UF)** | Coletar e encaminhar dados | 95% dos casos. Em servidores, endpoints, appliances. | Leve, eficiente, sem parsing completo localmente. Ideal para coleta pura. |
+| **Heavy Forwarder (HF)** | Coleta + Parsing + Filtering + Transformações | Quando precisa fazer parsing antes de enviar. Ex: filtrar eventos, mascarar dados, pré-rotear. | Consome mais CPU e RAM. Usado em poucos pontos estratégicos. |
+| **Intermediate Forwarder (IF)** | Repassar dados (sem parsing) para balancear ingestão | Em ambientes grandes para reduzir carga nos destinos. | Geralmente são UFs configurados como relays. |
+
+---
+
+## Universal Forwarder (UF)
+
+### O que é
+- Agente leve (~20-30MB de RAM).
+- Coleta dados brutos e encaminha para destinos.
+- Sem parsing completo localmente.
+
+### Quando usar
+- Coleta de dados em massa de servidores, appliances e endpoints.
+- Cenários onde a prioridade é minimizar impacto no host de origem.
+
+### Como usar
+- Instalar UF no host de origem.
+- Configurar `inputs.conf` para coleta de dados.
+- Configurar `outputs.conf` apontando para HFs ou Indexers.
+
+---
+
+## Heavy Forwarder (HF)
+
+### O que é
+- Instância completa do Splunk Enterprise.
+- Realiza parsing, filtragem, transformação e roteamento de eventos.
+
+### Quando usar
+- Necessidade de parsing antecipado dos dados.
+  - Filtragem de eventos indesejados.
+  - Roteamento condicional de eventos.
+  - Mascaramento de dados sensíveis.
+  - Parsing especial (Splunk Stream, Wire Data, etc).
+
+### Como usar
+- Instalar Splunk Enterprise.
+- Configurar `props.conf`, `transforms.conf` conforme necessidade de parsing.
+- Configurar `outputs.conf` para envio aos Indexers.
+
+**Nota:** Consumidor pesado de recursos. Deve ser dimensionado corretamente.
+
+---
+
+## Intermediate Forwarder (IF)
+
+### O que é
+- Forwarder configurado para aceitar dados e retransmiti-los sem parsing.
+- Atua como relay para balanceamento de carga.
+
+### Quando usar
+- Grandes ambientes com múltiplos sites.
+- Reduzir conexões diretas de UFs para Indexers.
+- Balanceamento de ingestão e tráfego otimizado.
+
+### Como usar
+- Pode ser UF ou HF configurado com:
+  - `inputs.conf` para escutar porta 9997 (`[splunktcp://9997]`).
+  - `outputs.conf` para enviar a próximo salto (HFs ou Indexers).
+
+**Nota:** Se parsing for adicionado, o IF vira HF funcionalmente.
+
+---
+
+## Estratégia de Decisão Rápida
+
+| Situação | Melhor Escolha | Observação |
+|:---------|:---------------|:-----------|
+| Coleta simples e massiva | UF | Sempre que possível |
+| Parsing, filtragem ou mascaramento necessário | HF | Apenas onde estritamente necessário |
+| Balanceamento de sites remotos | IF | Concentra e otimiza o tráfego |
+
+---
+
+## Regra de Ouro para Arquitetos Splunk
+
+- **Use UF sempre que possível.**
+- **Use HF apenas onde parsing for obrigatório.**
+- **Use IFs para ambientes distribuídos que necessitem de escalabilidade.**
+
+> Menos parsing local significa mais escalabilidade e menos manutenção.
+
+---
+
+ 
+______
 
 ### Estudo de 3 Cenários Reais (20 min)
 - **Empresa pequena (50GB/dia):**
