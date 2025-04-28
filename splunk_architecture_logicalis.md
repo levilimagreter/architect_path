@@ -68,6 +68,95 @@ Treinar para atingir o nível de Arquiteto de Splunk Plataforma.
 
 ### Modelos de Topologias (15 min)
 - Standalone vs Distributed vs Clustered
+
+
+# Splunk Validated Architectures (SVA) – Guia Baseado em SVA Oficial
+
+## 1. Introdução ao SVA
+
+O **Splunk Validated Architectures (SVA)** fornece modelos de referência comprovados para implementar Splunk Enterprise de forma segura, resiliente e escalável.  
+Esses modelos são aplicáveis a diferentes volumes de ingestão, perfis de disponibilidade e requisitos corporativos.
+
+SVA responde perguntas como:
+- Quantos servidores preciso?
+- Quando usar cluster de indexers?
+- Como ter alta disponibilidade?
+- Como distribuir as funções da plataforma Splunk?
+
+---
+
+## 2. Standalone vs Distributed vs Clustered
+
+| Modelo       | Descrição | Quando usar |
+|:-------------|:----------|:------------|
+| **Standalone** | Um único servidor para indexação, busca e interface. | Pequenos ambientes (<50GB/dia), laboratórios, POCs. |
+| **Distributed** | Separação de funções (UFs, Indexers, Search Head) sem clustering. | Ambientes médios a grandes (50GB-300GB/dia), início de escalabilidade. |
+| **Clustered** | Uso de clusters para alta disponibilidade (Indexer e Search Head Clustering). | Ambientes críticos (>300GB/dia), necessidade de tolerância a falhas, multisite. |
+
+**Observação:** Mesmo em arquiteturas distribuídas simples, é possível ter certa resiliência, mas apenas com clustering há HA verdadeiro.
+
+---
+
+## 3. Tipos de SVA e suas diferenças
+
+### C = Clássico (Classic)
+- Arquiteturas em um único data center.
+
+| Código | Descrição |
+|:------:|:----------|
+| **C1** | Standalone Splunk Server |
+| **C2** | Distributed Deployment (UF + Indexers + SH) sem clustering |
+| **C3** | Full Clustered Deployment (Indexer Cluster + Search Head Cluster) em único data center |
+
+### C23 = Variante especial
+- Parecido com C2 (Distributed), mas usando **SmartStore** para otimizar armazenamento (dados quentes localmente, frios em storage remoto).
+
+| Código | Descrição |
+|:------:|:----------|
+| **C23** | Distributed Deployment com SmartStore no Indexers (economia de storage local) |
+
+### M = Multisite
+- Arquiteturas para múltiplos data centers, com replicação entre sites.
+
+| Código | Descrição |
+|:------:|:----------|
+| **M4** | Multisite Indexer Cluster (2 sites ativos) com Search Head Cluster |
+| **M5** | Similar ao M4, mas com otimizações específicas de storage (SmartStore em multisite) |
+| **M6** | Arquitetura multisite altamente customizada (maior resiliência possível) |
+
+---
+
+## 4. Quando usar cada tipo de arquitetura
+
+| Arquitetura | Volume sugerido | Alta Disponibilidade | Uso de SmartStore | Multisite | Comentário |
+|:------------|:----------------|:---------------------|:------------------|:---------|:-----------|
+| **C1** | < 50GB/dia | Não | Não | Não | Apenas para POC ou ambientes mínimos |
+| **C2** | 50-300GB/dia | Parcial (manualmente) | Não | Não | Separação de papéis sem HA automático |
+| **C23** | 50-300GB/dia | Parcial | Sim | Não | Ideal quando storage local é caro |
+| **C3** | >300GB/dia | Sim (Clustered) | Opcional | Não | Alta disponibilidade real em um único data center |
+| **M4** | >300GB/dia | Sim (Multisite) | Não | Sim | Resiliência geográfica para disaster recovery |
+| **M5** | >300GB/dia | Sim | Sim (SmartStore) | Sim | Otimização de storage para grandes ambientes |
+| **M6** | >500GB/dia | Sim (máxima) | Customizável | Sim | Ambientes extremamente críticos |
+
+---
+
+## 5. Considerações Finais
+
+- **SmartStore** é recomendado para ambientes que desejam reduzir storage local em Indexers.
+- **Clustered Deployments** (C3, M4, M5, M6) são obrigatórios para alta disponibilidade e compliance.
+- **Multisite** é indicado para organizações com operação crítica em múltiplos data centers ou regiões geográficas.
+- Sempre considerar crescimento futuro: projetar para onde o ambiente deve ir, não apenas onde está hoje.
+
+> **Dica:** Mesmo para clientes iniciando pequeno, é recomendado um design que permita escalar sem grandes migrações disruptivas.
+
+---
+
+## Referência Oficial
+
+- [Splunk Validated Architectures (SVA) – Documentação Oficial](https://docs.splunk.com/Documentation/SVA/current/Architectures/About)
+
+_____
+
 - Quando e como usar:
   - Universal Forwarder (UF)
   - Heavy Forwarder (HF)
