@@ -156,7 +156,7 @@ SVA responde perguntas como:
 - [Splunk Validated Architectures (SVA) – Documentação Oficial](https://docs.splunk.com/Documentation/SVA/current/Architectures/About)
 
 _____
-
+```mermaid
 flowchart TD
     A(Splunk Deployment Models) --> B(Standalone Deployment)
     A --> C(Distributed Deployment)
@@ -186,6 +186,7 @@ flowchart TD
     style D2 fill:#C1F0C1,stroke:#28a745
     style D3 fill:#C1F0C1,stroke:#28a745
     style D4 fill:#C1F0C1,stroke:#28a745
+```
 _____
 
 - Quando e como usar:
