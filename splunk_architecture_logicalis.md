@@ -1,8 +1,8 @@
 
-# Splunk Architecture Enablement – Logicalis
+# Splunk Architecture Enablement
 
 ## Objetivo
-Treinar a Logicalis para atingir o nível de Arquiteto de Splunk Plataforma, mesmo sem depender diretamente de certificações oficiais, através de uma trilha prática e gradual.
+Treinar para atingir o nível de Arquiteto de Splunk Plataforma.
 
 ---
 
