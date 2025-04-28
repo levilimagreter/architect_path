@@ -163,29 +163,21 @@ flowchart TD
     A --> D(Clustered Deployment)
 
     %% Standalone
-    B --> B1[C1 - Standalone Server]
+    B --> B1(C1 - Standalone Server)
 
     %% Distributed
-    C --> C1[C2 - Distributed (Indexers + SH, sem clustering)]
-    C --> C2[C23 - Distributed com SmartStore]
+    C --> C1(C2 - Distributed - Indexers + SH sem clustering)
+    C --> C2(C23 - Distributed com SmartStore)
 
     %% Clustered
-    D --> D1[C3 - Clustered (Indexer Cluster + SH Cluster)]
-    D --> D2[M4 - Multisite Cluster (2 sites ativos)]
-    D --> D3[M5 - Multisite + SmartStore]
-    D --> D4[M6 - Multisite Customizado]
+    D --> D1(C3 - Clustered - Indexer Cluster + SH Cluster)
+    D --> D2(M4 - Multisite Cluster - 2 sites ativos)
+    D --> D3(M5 - Multisite com SmartStore)
+    D --> D4(M6 - Multisite Customizado)
 
     %% Observações
-    C2 --> E1((SmartStore))
-    D3 --> E2((SmartStore))
-
-    style B1 fill:#D9E8FB,stroke:#0366d6
-    style C1 fill:#D9E8FB,stroke:#0366d6
-    style C2 fill:#D9E8FB,stroke:#0366d6
-    style D1 fill:#C1F0C1,stroke:#28a745
-    style D2 fill:#C1F0C1,stroke:#28a745
-    style D3 fill:#C1F0C1,stroke:#28a745
-    style D4 fill:#C1F0C1,stroke:#28a745
+    C2 --> E1(SmartStore - Storage Otimizado)
+    D3 --> E2(SmartStore - Multisite)
 ```
 _____
 
