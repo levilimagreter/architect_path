@@ -279,28 +279,114 @@ O Splunk utiliza diferentes tipos de forwarders para coleta, processamento e enc
 
 ---
 
- 
-______
+# Simulado Resolvido: Crescimento de 100GB/dia para 500GB/dia
 
-### Estudo de 3 Cenários Reais (20 min)
-- **Empresa pequena (50GB/dia):**
-  - UF > IDX standalone > SH
-- **Empresa média (500GB/dia):**
-  - UF > HF (parseo) > IDX Cluster > SH Cluster
-- **Empresa grande (1TB/dia multisite):**
-  - UF > IF > HF > IDX Cluster multisite > SH Cluster multisite
+## Caso:
+> Uma empresa hoje ingere **100 GB/dia** de dados no Splunk, com projeção de crescer para **500 GB/dia** em até 2 anos. 
 
-### Simulado ao Vivo (15 min)
-- Caso: "Uma empresa projeta crescer de 100GB/dia para 500GB/dia em 2 anos."
-- Atividade: participantes sugerem uma arquitetura.
-- Discussão e comparação com a arquitetura recomendada.
-
-### Encerramento (5 min)
-- Reforço: elasticidade e escalabilidade como pilares.
-- Teaser para próxima sessão: **Deep Dive em Indexer Cluster**.
+## Objetivo:
+Projetar uma **arquitetura elástica e escalável**, alinhada ao crescimento previsto, com sugestões concretas de sizing para os componentes Splunk Enterprise.
 
 ---
 
-# Próximos Passos
-- Consolidar conceitos hoje vistos.
-- Na próxima sessão: detalhes de configuração de cluster de Indexers.
+## Fase 1: Situação Atual (100 GB/dia)
+
+### Arquitetura Sugerida:
+
+UF → HF (opcional) → IDX Standalone (1 nó) → SH Standalone (1 nó)
+
+### Sizing Recomendado:
+
+| Componente      | vCPU | RAM  | Disco (hot/warm) | Sistema |
+|-----------------|------|------|------------------|---------|
+| UF              | 2    | 4 GB | N/A              | Linux   |
+| HF (opcional)   | 4    | 8 GB | 100 GB           | Linux   |
+| IDX Standalone  | 12   | 12 GB| 1.5 TB SSD       | Linux   |
+| SH Standalone   | 8    | 12 GB| 100 GB           | Linux   |
+
+> Observação: Pode-se omitir o HF caso o parsing esteja sendo feito diretamente no IDX e não haja uso intenso de parsing avançado, routeo ou filtragem.
+
+---
+
+# Simulado Resolvido: Crescimento de 100GB/dia para 500GB/dia
+
+## Caso:
+> Uma empresa hoje ingere **100 GB/dia** de dados no Splunk, com projeção de crescer para **500 GB/dia** em até 2 anos. 
+
+## Objetivo:
+Projetar uma **arquitetura elástica e escalável**, alinhada ao crescimento previsto, com sugestões concretas de sizing para os componentes Splunk Enterprise.
+
+---
+
+## Fase 1: Situação Atual (100 GB/dia)
+
+### Arquitetura Sugerida:
+
+### Sizing Recomendado:
+
+| Componente      | vCPU | RAM  | Disco (hot/warm) | Sistema |
+|-----------------|------|------|------------------|---------|
+| UF              | 2    | 4 GB | N/A              | Linux   |
+| HF (opcional)   | 4    | 8 GB | 100 GB           | Linux   |
+| IDX Standalone  | 12   | 12 GB| 1.5 TB SSD       | Linux   |
+| SH Standalone   | 8    | 12 GB| 100 GB           | Linux   |
+
+> Observação: Pode-se omitir o HF caso o parsing esteja sendo feito diretamente no IDX e não haja uso intenso de parsing avançado, routeo ou filtragem.
+
+---
+
+## Fase 2: Arquitetura Alvo (500 GB/dia)
+
+### Arquitetura Recomendada:
+
+### Considerações Técnicas:
+- Indexação distribuída com **replication factor = 2**, **search factor = 2**
+- SHC para distribuição de carga de busca e HA
+- HFs centralizam parsing, roteamento, mascaramento e filtragem
+
+---
+
+### Sizing por Componente:
+
+#### Heavy Forwarder (HF)
+| Qtd. | vCPU | RAM  | Disco | Observações                    |
+|------|------|------|-------|--------------------------------|
+| 2    | 8    | 16 GB| 200 GB SSD | Pode atuar com filtragem de eventos e roteamento para sites distintos |
+
+#### Indexer Cluster (3 nós)
+
+| Qtd. | vCPU | RAM  | Disco (hot/warm) | Observações                      |
+|------|------|------|------------------|----------------------------------|
+| 3    | 12   | 16 GB| 3 TB SSD         | Garantir 90 dias com RF=2 e retenção para compliance |
+
+> Disco estimado:  
+> `500 GB/dia x 90 dias x 2 (replication) = 90 TB total brutos → 30 TB por indexer`  
+> Com margem de buffer, **usar discos de 3 TB SSD por mount volume**, com retenção controlada por tiering.
+
+#### Search Head Cluster (3 nós + Deployer)
+
+| Qtd. | vCPU | RAM  | Disco | Observações                      |
+|------|------|------|-------|----------------------------------|
+| 3    | 8    | 16 GB| 100 GB| SHC distribuído para resiliência |
+| 1    | 2    | 4 GB | 50 GB | Deployer para SHC                |
+
+---
+
+## Elasticidade e Expansão
+
+### Expansão futura prevista:
+- Adicionar mais indexers ao cluster: Escalabilidade horizontal.
+- Adicionar mais SHs ao cluster: Sustentação de maior volume de buscas.
+- Crescimento modular: possível ativar multisite se a empresa se expandir geograficamente.
+
+---
+
+## Conclusão
+
+**Resposta Final:**
+A empresa deve adotar uma arquitetura com **HF + IDX Cluster + SH Cluster**, com sizing dimensionado para o crescimento de ingestão e pesquisa. O projeto deve considerar elasticidade com escalabilidade horizontal de indexers e SHs, mantendo o desempenho e a resiliência.
+
+**Próximo Passo:**
+a) Entrega de certificados do Workshop Machine Data 101 e data para o workshop de Dashboard Studios.
+b) Repetir o workshop Workshop Machine Data 101 com a entrega feita pelo parceiro
+c) Entregar o workshop Workshop Machine Data 101 para algun(s) cliente(s) com a liderança da Logicalis na atividade 
