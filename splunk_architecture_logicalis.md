@@ -387,6 +387,6 @@ Projetar uma **arquitetura elástica e escalável**, alinhada ao crescimento pre
 A empresa deve adotar uma arquitetura com **HF + IDX Cluster + SH Cluster**, com sizing dimensionado para o crescimento de ingestão e pesquisa. O projeto deve considerar elasticidade com escalabilidade horizontal de indexers e SHs, mantendo o desempenho e a resiliência.
 
 **Próximo Passo:**
-a) Entrega de certificados do Workshop Machine Data 101 e data para o workshop de Dashboard Studios.
-b) Repetir o workshop Workshop Machine Data 101 com a entrega feita pelo parceiro
-c) Entregar o workshop Workshop Machine Data 101 para algun(s) cliente(s) com a liderança da Logicalis na atividade 
+a) Entrega de certificados do Workshop Machine Data 101 e data para o workshop de Dashboard Studios./
+b) Repetir o workshop Workshop Machine Data 101 com a entrega feita pelo parceiro/
+c) Entregar o workshop Workshop Machine Data 101 para algun(s) cliente(s) com a liderança da Logicalis na atividade /
