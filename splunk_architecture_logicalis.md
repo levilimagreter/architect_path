@@ -327,9 +327,9 @@ Projetar uma **arquitetura elástica e escalável**, alinhada ao crescimento pre
 | Componente      | vCPU | RAM  | Disco (hot/warm) | Sistema |
 |-----------------|------|------|------------------|---------|
 | UF              | 2    | 4 GB | N/A              | Linux   |
-| HF (opcional)   | 4    | 8 GB | 100 GB           | Linux   |
+| HF (opcional)   | 12    | 12 GB | 100 GB           | Linux   |
 | IDX Standalone  | 12   | 12 GB| 1.5 TB SSD       | Linux   |
-| SH Standalone   | 8    | 12 GB| 100 GB           | Linux   |
+| SH Standalone   | 12    | 12 GB| 100 GB           | Linux   |
 
 > Observação: Pode-se omitir o HF caso o parsing esteja sendo feito diretamente no IDX e não haja uso intenso de parsing avançado, routeo ou filtragem.
 
@@ -351,7 +351,7 @@ Projetar uma **arquitetura elástica e escalável**, alinhada ao crescimento pre
 #### Heavy Forwarder (HF)
 | Qtd. | vCPU | RAM  | Disco | Observações                    |
 |------|------|------|-------|--------------------------------|
-| 2    | 8    | 16 GB| 200 GB SSD | Pode atuar com filtragem de eventos e roteamento para sites distintos |
+| 2    | 12   | 16 GB| 200 GB SSD | Pode atuar com filtragem de eventos e roteamento para sites distintos |
 
 #### Indexer Cluster (3 nós)
 
@@ -367,8 +367,8 @@ Projetar uma **arquitetura elástica e escalável**, alinhada ao crescimento pre
 
 | Qtd. | vCPU | RAM  | Disco | Observações                      |
 |------|------|------|-------|----------------------------------|
-| 3    | 8    | 16 GB| 100 GB| SHC distribuído para resiliência |
-| 1    | 2    | 4 GB | 50 GB | Deployer para SHC                |
+| 3    | 12   | 16 GB| 100 GB| SHC distribuído para resiliência |
+| 1    | 12   | 4 GB | 50 GB | Deployer para SHC                |
 
 ---
 
